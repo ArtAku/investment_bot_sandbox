@@ -1,2 +1,6 @@
 .env
 .vscode/*
+venv/**
+data/**
+names.txt
+*.rar
