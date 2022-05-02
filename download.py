@@ -3,16 +3,13 @@ from tinkoff.invest import Client,InstrumentStatus,exceptions
 from datetime import datetime
 import json
 from time import sleep
+from config import ENVS
 
-CONTRACT_PREFIX = "tinkoff.public.invest.api.contract.v1."
-TOKEN =  #os.environ["INVEST_TOKEN"]
-INTERVALS = {
-
-}
+TOKEN = ENVS['TOKEN_READ']
 
 def convertCandle(candle):
     # open, close, high, low, volume
-    return f'{candle.open.units}.{candle.open.nano}|{candle.close.units}.{candle.close.nano}|{candle.high.units}.{candle.high.nano}|{candle.low.units}.{candle.low.nano}|{candle.volume}'
+    return f'{candle.open.units}.{candle.open.nano};{candle.close.units}.{candle.close.nano};{candle.high.units}.{candle.high.nano};{candle.low.units}.{candle.low.nano};{candle.volume}'
 
 def downloadYear(client, instrument):
     to_ = datetime.now()
@@ -24,14 +21,16 @@ def downloadYear(client, instrument):
         print('Awaiting')
         sleep(61)
         res = client.market_data.get_candles(figi=figi,interval=5,from_=from_,to=to_)
+    if not len(res.candles):
+        return
     cwd = os.getcwd()
     # dir = os.path.join(cwd, "data", figi)
     # if not os.path.exists(dir):
     #     os.mkdir(dir)
-    data = []
+    data = ['time;open;close;high;low;volume;country;currency']
     for r in res.candles:
-        data.append(r.time.strftime("%Y-%m-%d")+ '|' + convertCandle(r)+ f'|{instrument.country_of_risk}|{instrument.currency}')
-    with open(os.path.join(cwd, "data",figi + ".txt"),'w') as f:
+        data.append(r.time.strftime("%Y-%m-%d")+ ';' + convertCandle(r)+ f';{instrument.country_of_risk};{instrument.currency}')
+    with open(os.path.join(cwd, "data",figi + ".csv"),'w') as f:
         f.writelines(data)
 
 
@@ -44,11 +43,9 @@ def TestDownload():
         for i in instruments:
             names[i.figi] = i.name
 
-        with open("names.txt",'w') as f:
+        with open("names.json",'w') as f:
             f.write(json.dumps(names))
 
         for instrument in instruments:
             downloadYear(client, instrument)
 
-if __name__ == "__main__":
-    TestDownload()
