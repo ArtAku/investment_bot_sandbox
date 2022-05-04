@@ -1,17 +1,18 @@
 from download import downloadAll
 from config import args
 from time import sleep
+import logging
 
 def loop():
     try:
         while True:
-            print('loop')    
+            logging.debug('loop')    
             sleep(1)
     except KeyboardInterrupt:
-        print('Program manually stopped')
+        logging.info('Program manually stopped')
 
 def main():
-    print('Start')
+    logging.info('Start')
     # loop()
     downloadAll()
 
