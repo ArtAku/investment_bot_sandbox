@@ -21,6 +21,17 @@ INSTRUMENTS = {
     "INSTRUMENT_STATUS_BASE": 1,
     "INSTRUMENT_STATUS_ALL": 2
 }
+REALEXCHANGE = {
+    "REAL_EXCHANGE_UNSPECIFIED": 0,
+    "REAL_EXCHANGE_MOEX": 1,
+    "REAL_EXCHANGE_RTS": 2,
+    "REAL_EXCHANGE_OTC": 3,
+
+    0:"UNSPECIFIED",
+    1:"MOEX",
+    2:"RTS",
+    3:"OTC"
+}
 
 parser = argparse.ArgumentParser(description='Trading tinkoff app')
 parser.add_argument('--download', dest='download', action='store_const',
@@ -40,4 +51,4 @@ cwd = getcwd()
 def setLogLevel(logLevel):
     logging.basicConfig(level=getattr(logging,logLevel))
 
-setLogLevel(args['logLevel'])
+setLogLevel(args.logLevel)

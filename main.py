@@ -14,7 +14,8 @@ def loop():
 def main():
     logging.info('Start')
     # loop()
-    downloadAll()
+    if args.download:
+        downloadAll()
 
 if __name__ == '__main__':
     main()

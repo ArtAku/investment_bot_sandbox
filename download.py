@@ -3,14 +3,10 @@ from tinkoff.invest import Client,exceptions,Share,services
 from datetime import datetime,timezone
 import json
 from config import cwd, ENVS, INTERVALS, INSTRUMENTS
-from supply import safeRequest
+from supply import safeRequest,stringify
 import logging
 
 TOKEN = ENVS['TOKEN_READ']
-
-def convertCandle(candle):
-    # open, close, high, low, volume
-    return f'{candle.open.units}.{candle.open.nano};{candle.close.units}.{candle.close.nano};{candle.high.units}.{candle.high.nano};{candle.low.units}.{candle.low.nano};{candle.volume}'
 
 def downloadYears(client:services, instrument:Share):
     logging.debug(f'{instrument.name}')
@@ -29,7 +25,7 @@ def downloadYears(client:services, instrument:Share):
         if not len(res.candles):
             return
         for r in res.candles[::-1]:
-            data.append(r.time.strftime("%Y-%m-%d")+ ';' + convertCandle(r)+ f';{instrument.country_of_risk};{instrument.currency}\n')
+            data.append(r.time.strftime("%Y-%m-%d")+ ';' + stringify.convertCandle(r)+ f';{instrument.country_of_risk};{instrument.currency}\n')
     with open(join(cwd, "data", figi + ".csv"),'w') as f:
         f.writelines(data)
 
@@ -42,10 +38,10 @@ def downloadAll():
 def updateInfo():
     with Client(TOKEN) as client:
         res = safeRequest(client.instruments.shares,{"instrument_status":INSTRUMENTS['INSTRUMENT_STATUS_ALL']})
-        names = {}
+        info = {}
         for i in res.instruments:
-            names[i.figi] = i.name
+            info[i.figi] = stringify.convertShare(i,False)
 
         with open(join(cwd,"data","info.json"),'w') as f:
-            f.write(json.dumps(names))
+            f.write(json.dumps(info))
         return res.instruments
