@@ -1,6 +1,7 @@
 import argparse
 from os import getcwd
 import logging
+import datetime
 
 CONTRACT_PREFIX = "tinkoff.public.invest.api.contract.v1."
 with open('.env','r') as f:
@@ -33,10 +34,22 @@ REALEXCHANGE = {
     3:"OTC"
 }
 
+def valid_date(s):
+    try:
+        return datetime.datetime.strptime(s, "%Y-%m-%dT%H:%M:%S")
+    except ValueError:
+        msg = "not a valid date: {0!r}".format(s)
+        raise argparse.ArgumentTypeError(msg)
+
 parser = argparse.ArgumentParser(description='Trading tinkoff app')
 parser.add_argument('--download', dest='download', action='store_const',
                     const=True, default=False,
                     help='download shares data')
+parser.add_argument('--timefrom', dest='timefrom', action='store',
+                    help='set timerange in YYYY-MM-DDTHH:MM:SS from <timefrom> to now for custom download', type=valid_date)
+parser.add_argument('--interval', dest='interval', action='store',
+                    choices=["1_MIN","5_MIN","15_MIN","HOUR","DAY"],
+                    help='set available intervals for custom download. 1,5,15 min max for 1 day, 1 hour for 1 week and 1 day for 1 year')
 parser.add_argument('--mysql', dest='mysql', action='store_const',
                     const=True, default=False,
                     help='enable mysql saving')

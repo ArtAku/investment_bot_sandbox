@@ -1,4 +1,4 @@
-from download import downloadAll
+from download import downloader
 from config import args
 from time import sleep
 import logging
@@ -15,7 +15,11 @@ def main():
     logging.info('Start')
     # loop()
     if args.download:
-        downloadAll()
+        d = downloader()
+        if args.timefrom or args.interval:
+            d.downloadAll(True, args.timefrom, args.interval)
+        else:
+            d.downloadAll()
 
 if __name__ == '__main__':
     main()

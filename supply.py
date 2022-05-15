@@ -16,12 +16,16 @@ def safeRequest(f,args):
     return res
 
 class stringify():
+    """
+    svc scheme
+    open;clos;high;low;volume;
+    """
     def covnertCandle(candle:HistoricCandle)->str:
         # open, close, high, low, volume
         return f'{candle.open.units}.{candle.open.nano};{candle.close.units}.{candle.close.nano};{candle.high.units}.{candle.high.nano};{candle.low.units}.{candle.low.nano};{candle.volume}'
 
     """
-    scheme
+    json scheme
     {
         "figi":{
             "name":str
