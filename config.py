@@ -1,12 +1,19 @@
 import argparse
 from os import getcwd
 import logging
+from environs import Env
 import datetime
+import yaml
 
 CONTRACT_PREFIX = "tinkoff.public.invest.api.contract.v1."
-with open('.env','r') as f:
-    lines = f.readlines()
-ENVS = { l.split('=')[0] : l.split('=')[1] for l in lines }
+
+env = Env()
+env.read_env() 
+
+TEST_CONFIG = {}
+with open('test.yaml', 'r') as file:
+    TEST_CONFIG = yaml.safe_load(file)
+
 TIMEOUT = 61 #seconds
 
 INTERVALS = {

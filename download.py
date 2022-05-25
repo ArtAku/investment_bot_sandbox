@@ -2,7 +2,7 @@ from os.path import join
 from tinkoff.invest import Client,exceptions,Share,services
 from datetime import datetime,timezone
 import json
-from config import cwd, ENVS, INTERVALS, INSTRUMENTS
+from config import cwd, INSTRUMENTS, env
 from supply import safeRequest,stringify
 import logging
 import datetime
@@ -74,7 +74,7 @@ class downloader():
             f.writelines(data)
 
     def downloadAll(self, is_custom=False, timefrom:datetime.datetime=None, interval:str=None):
-        with Client(ENVS['TOKEN_READ']) as client:
+        with Client(env('TOKEN_READ')) as client:
             instruments = self.updateInfo()
 
             n = datetime.datetime.now()
@@ -99,7 +99,7 @@ class downloader():
         return datetime.timedelta(minutes=(requests/100))
 
     def updateInfo(self):
-        with Client(ENVS['TOKEN_READ']) as client:
+        with Client(env('TOKEN_READ')) as client:
             res = safeRequest(client.instruments.shares,{"instrument_status":INSTRUMENTS['INSTRUMENT_STATUS_ALL']})
             logging.info(f'{len(res.instruments)} shares found')
             info = {}

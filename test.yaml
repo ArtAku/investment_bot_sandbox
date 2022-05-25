@@ -1,0 +1,5 @@
+interval: CANDLE_INTERVAL_1_MIN
+limits:
+  deposit: 1000
+  sell: 10
+  buy: 10

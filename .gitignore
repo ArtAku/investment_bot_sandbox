@@ -6,3 +6,4 @@ names.*
 *.rar
 *.tar.gz
 __pycache__/**
+*.db
